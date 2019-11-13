@@ -26,20 +26,15 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="39dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="不会用？点击:" />
 
                 <TextView
                     android:id="@+id/view_manual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="all"
+                    android:paddingLeft="10px"
                     android:text="使用手册"
                     android:textColor="#2D40AD"
                     android:textStyle="bold" />
@@ -48,13 +43,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="10dp"
-                    android:text="欢迎加官方QQ交流群:" />
+                    android:text="官方QQ群:" />
 
                 <TextView
                     android:id="@+id/join_qq_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autoLink="all"
+                    android:autoLink="none"
                     android:text="42805407"
                     android:textColor="#F00"
                     android:textStyle="bold" />
@@ -69,9 +64,9 @@
 
             <EditText
                 android:id="@+id/input"
-                style="@style/Base.Widget.MaterialComponents.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/log_shape"
                 android:gravity="top"
                 android:inputType="textMultiLine"
@@ -90,7 +85,7 @@
                     style="@style/Widget.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="#66cc66"
                     android:onClick="start"
                     android:text="启动"
@@ -102,27 +97,36 @@
                     style="@style/Widget.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginLeft="10dp"
                     android:background="#e6e6e6"
                     android:text="停止"
                     android:textColor="#777"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:text="状态：" />
+           <LinearLayout
+               android:orientation="horizontal"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:text="已停止"
-                android:textColor=" #ff1a1a"
-                android:textStyle="bold" />
+               <TextView
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:paddingLeft="10dp"
+                   android:text="状态：" />
+
+               <TextView
+                   android:id="@+id/tv_status"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:text="已停止"
+                   android:textColor=" #ff1a1a"
+                   android:textStyle="bold" />
+           </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="match_parent"
@@ -133,15 +137,13 @@
             <TextView
                 android:id="@+id/ip_addrs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:paddingLeft="10dp" />
-
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:paddingBottom="20dp"
+                android:paddingBottom="3dp"
                 android:text="日志：" />
 
             <EditText
@@ -149,14 +151,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/log_shape"
-                android:clickable="true"
                 android:focusable="false"
                 android:gravity="top"
                 android:inputType="textMultiLine"
-                android:lines="8"
+                android:lines="5"
                 android:scrollbars="vertical"
-                android:singleLine="false"
-                android:text="" />
+                android:singleLine="false" />
 
         </LinearLayout>
     </ScrollView>

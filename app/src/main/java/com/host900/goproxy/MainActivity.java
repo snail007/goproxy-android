@@ -1,5 +1,7 @@
 package com.host900.goproxy;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,6 +12,8 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
@@ -35,12 +39,24 @@ public class MainActivity extends AppCompatActivity {
     String serviceID = "srv";
     int log_line_cnt = 0;
 
+    EditText log  ;
+
+    Handler handler=new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            String line=msg.getData().getString("line");
+            if (++log_line_cnt > 100) {
+                log.setText("");
+            }
+            log.append(line + "\n");
+        }
+    };
+
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         final EditText editText = findViewById(R.id.input);
-
         SharedPreferences config = getSharedPreferences("config", Context.MODE_PRIVATE);
         final SharedPreferences.Editor editor = config.edit();
 
@@ -49,13 +65,32 @@ public class MainActivity extends AppCompatActivity {
         editText.addTextChangedListener(watcher(editor, editText));
 
         TextView status = findViewById(R.id.tv_status);
-        EditText log = (EditText)findViewById(R.id.log_output);
+        log = (EditText) findViewById(R.id.log_output);
         TextView tip = findViewById(R.id.tip);
         TextView ipaddrs = findViewById(R.id.ip_addrs);
         String sdkVersion = Proxysdk.version();
         TextView viewManual = findViewById(R.id.view_manual);
         TextView joinQQ = findViewById(R.id.join_qq_group);
-
+        ipaddrs.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                  ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                 ClipData mClipData = ClipData.newPlainText("ip", ((TextView)view).getText());
+                 cm.setPrimaryClip(mClipData);
+                Toast.makeText(view.getContext(), "IP已经复制", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
+        joinQQ.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData mClipData = ClipData.newPlainText("qq", ((TextView)view).getText());
+                cm.setPrimaryClip(mClipData);
+                Toast.makeText(view.getContext(), "QQ群号码已复制", Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
         //ui
         viewManual.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
         viewManual.getPaint().setAntiAlias(true);//抗锯齿
@@ -73,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_start).setOnClickListener(start(log, status, editText, this));
         findViewById(R.id.btn_stop).setOnClickListener(stop(status, editText));
         viewManual.setOnClickListener(openURL("https://snail007.github.io/goproxy/manual/zh/#/"));
-        joinQQ.setOnClickListener(openURL("https://jq.qq.com/?_wv=1027&k=5G2EwxR"));
+//        joinQQ.setOnClickListener(openURL("https://jq.qq.com/?_wv=1027&k=5G2EwxR"));
 
         return;
     }
@@ -95,16 +130,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String args = editText.getText().toString().trim();
-                if(args.indexOf("proxy")==0&&args.length()>=5){
-                    args=args.substring(5);
+                if (args.indexOf("proxy") == 0 && args.length() >= 5) {
+                    args = args.substring(5);
+                }
+                if (args.replaceAll("\n","").length() == 0) {
+                    Toast.makeText(ctx, "参数不能为空", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 String err = Proxysdk.startWithLog(serviceID, args, "", new LogCallback() {
                     @Override
                     public void write(String line) {
-                        if (++log_line_cnt > 100) {
-                            log.setText("");
-                        }
-                        log.append(line + "\n");
+                        Message msg=Message.obtain();
+                        msg.what=1;
+                        Bundle bundle=new Bundle();
+                        bundle.putString("line", line);
+                       msg.setData(bundle);
+                        handler.sendMessage(msg);
                     }
                 });
                 if (!err.isEmpty()) {
@@ -118,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    public View.OnClickListener openURL(final  String u) {
+    public View.OnClickListener openURL(final String u) {
 
         return new View.OnClickListener() {
             @Override
