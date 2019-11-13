@@ -1,6 +1,11 @@
 # goproxy-android
 snail007/goproxy全能代理服务器安卓版。
 
+### [点击我观看视频教程](https://space.bilibili.com/472844633)
+
+- [点击下载](https://github.com/snail007/goproxy-android/releases)
+- 如果上面不能正常下载，点击这里[镜像下载](https://www.host900.com/snail007/goproxy-android/)
+
 ## 源码说明
 
 项目使用androidstudio开发，基于[snail007/goproxy](https://github.com/snail007/goproxy)官方[安卓SDK](https://github.com/snail007/goproxy-sdk/blob/master/README_ZH.md)开发，
