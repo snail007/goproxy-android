@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='goproxy服务器版'
+rootProject.name='goproxy'

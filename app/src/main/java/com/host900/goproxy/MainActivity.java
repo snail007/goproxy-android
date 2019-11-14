@@ -35,6 +35,7 @@ import snail007.proxysdk.Proxysdk;
 
 public class MainActivity extends AppCompatActivity {
 
+
     String TAG = "HomeFragment";
     String serviceID = "srv";
     int log_line_cnt = 0;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                   ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                  ClipData mClipData = ClipData.newPlainText("ip", ((TextView)view).getText());
                  cm.setPrimaryClip(mClipData);
-                Toast.makeText(view.getContext(), "IP已经复制", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), R.string.ip_copied, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData mClipData = ClipData.newPlainText("qq", ((TextView)view).getText());
                 cm.setPrimaryClip(mClipData);
-                Toast.makeText(view.getContext(), "QQ群号码已复制", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), R.string.qqcopied, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -95,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
         viewManual.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
         viewManual.getPaint().setAntiAlias(true);//抗锯齿
 
-        getSupportActionBar().setTitle("全能代理服务器");
-        tip.setText("由 snail007/goproxy SDK " + sdkVersion + " 强力驱动！");
+        getSupportActionBar().setTitle(getString(R.string.apptitle));
+        tip.setText(getString(R.string.hint0) + sdkVersion + getString(R.string.hint1));
         ipaddrs.setText(getIpAddress(getBaseContext()));
 
         joinQQ.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Proxysdk.stop((serviceID));
                 editText.setEnabled(true);
-                status.setText("已停止");
+                status.setText(R.string.stopped);
             }
         };
     }
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     args = args.substring(5);
                 }
                 if (args.replaceAll("\n","").length() == 0) {
-                    Toast.makeText(ctx, "参数不能为空", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, R.string.argsisempty, Toast.LENGTH_LONG).show();
                     return;
                 }
                 String err = Proxysdk.startWithLog(serviceID, args, "", new LogCallback() {
@@ -150,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
                 });
                 if (!err.isEmpty()) {
                     Toast.makeText(ctx, err, Toast.LENGTH_LONG).show();
-                    //  Log.d(TAG, err);
+//                    Log.d(TAG, err);
+
                 } else {
                     editText.setEnabled(false);
                     status.setText("运行中");

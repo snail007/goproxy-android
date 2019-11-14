@@ -3,4 +3,11 @@
     <string name="title_home">主页</string>
     <string name="title_dashboard">关于</string>
     <string name="args">运行参数</string>
+    <string name="ip_copied">IP已经复制</string>
+    <string name="qqcopied">QQ群号码已复制</string>
+    <string name="apptitle">全能代理服务器</string>
+    <string name="hint0">由 snail007/goproxy SDK</string>
+    <string name="hint1">强力驱动！</string>
+    <string name="stopped">已停止</string>
+    <string name="argsisempty">参数不能为空</string>
 </resources>
