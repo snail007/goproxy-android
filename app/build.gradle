@@ -7,9 +7,17 @@ android {
         applicationId "com.host900.goproxy"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi-v7a', "arm64-v8a"
+            universalApk true
+        }
     }
     buildTypes {
         release {
@@ -18,6 +26,7 @@ android {
         }
     }
 }
+
 repositories {
     flatDir {
         dirs 'libs'
