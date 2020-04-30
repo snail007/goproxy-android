@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="none"
-        android:text="793015219"
+        android:text="189618940"
         android:textColor="#F00"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
