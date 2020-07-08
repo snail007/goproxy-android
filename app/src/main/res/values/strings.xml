@@ -2,12 +2,15 @@
     <string name="app_name">GoProxy</string>
     <string name="title_home">主页</string>
     <string name="title_dashboard">关于</string>
-    <string name="args">运行参数</string>
+    <string name="args">一行一个服务的运行参数，多个服务写多行</string>
     <string name="ip_copied">IP已经复制</string>
     <string name="qqcopied">QQ群号码已复制</string>
-    <string name="apptitle">全能代理服务器</string>
+    <string name="apptitle">安卓全能代理服务器</string>
     <string name="hint0">由 snail007/goproxy SDK</string>
     <string name="hint1">强力驱动！</string>
     <string name="stopped">已停止</string>
     <string name="argsisempty">参数不能为空</string>
+    <string name="startfail">启动失败</string>
+    <string name="startok">启动成功</string>
+    <string name="stopdone">停止成功</string>
 </resources>

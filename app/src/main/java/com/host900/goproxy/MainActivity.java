@@ -12,11 +12,9 @@ import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,33 +26,20 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Random;
 
-import snail007.proxysdk.LogCallback;
 import snail007.proxysdk.Proxysdk;
 
 public class MainActivity extends AppCompatActivity {
 
 
     String TAG = "HomeFragment";
-    String serviceID = "srv";
-    int log_line_cnt = 0;
-
-    EditText log  ;
-
-    Handler handler=new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            String line=msg.getData().getString("line");
-            if (++log_line_cnt > 100) {
-                log.setText("");
-            }
-            log.append(line + "\n");
-        }
-    };
+    ArrayList<String> serviceIDs = new ArrayList();
 
     public void onCreate(Bundle savedInstanceState) {
-         super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         final EditText editText = findViewById(R.id.input);
@@ -64,20 +49,21 @@ public class MainActivity extends AppCompatActivity {
         final String args = config.getString("args", "");
         editText.setText(args);
         editText.addTextChangedListener(watcher(editor, editText));
+        editText.setHorizontallyScrolling(true);
 
-        TextView status = findViewById(R.id.tv_status);
-        log = (EditText) findViewById(R.id.log_output);
+
         TextView tip = findViewById(R.id.tip);
         TextView ipaddrs = findViewById(R.id.ip_addrs);
         String sdkVersion = Proxysdk.version();
         TextView viewManual = findViewById(R.id.view_manual);
         TextView joinQQ = findViewById(R.id.join_qq_group);
+        Log.d(TAG,Proxysdk.version());
         ipaddrs.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                  ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                 ClipData mClipData = ClipData.newPlainText("ip", ((TextView)view).getText());
-                 cm.setPrimaryClip(mClipData);
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData mClipData = ClipData.newPlainText("ip", ((TextView) view).getText());
+                cm.setPrimaryClip(mClipData);
                 Toast.makeText(view.getContext(), R.string.ip_copied, Toast.LENGTH_LONG).show();
                 return false;
             }
@@ -86,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData mClipData = ClipData.newPlainText("qq", ((TextView)view).getText());
+                ClipData mClipData = ClipData.newPlainText("qq", ((TextView) view).getText());
                 cm.setPrimaryClip(mClipData);
                 Toast.makeText(view.getContext(), R.string.qqcopied, Toast.LENGTH_LONG).show();
                 return false;
@@ -97,66 +83,71 @@ public class MainActivity extends AppCompatActivity {
         viewManual.getPaint().setAntiAlias(true);//抗锯齿
 
         getSupportActionBar().setTitle(getString(R.string.apptitle));
-        tip.setText(getString(R.string.hint0) + sdkVersion + getString(R.string.hint1));
+        tip.setText(getString(R.string.hint0) +" "+ sdkVersion +" "+ getString(R.string.hint1));
         ipaddrs.setText(getIpAddress(getBaseContext()));
 
         joinQQ.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
         joinQQ.getPaint().setAntiAlias(true);//抗锯齿
 
-        log.setMovementMethod(ScrollingMovementMethod.getInstance());
+        findViewById(R.id.btn_start).setOnClickListener(start(editText, this));
+        findViewById(R.id.btn_stop).setOnClickListener(stop(this));
 
-        //event
-        findViewById(R.id.btn_start).setOnClickListener(start(log, status, editText, this));
-        findViewById(R.id.btn_stop).setOnClickListener(stop(status, editText));
         viewManual.setOnClickListener(openURL("https://snail007.github.io/goproxy/manual/zh/#/"));
 //        joinQQ.setOnClickListener(openURL("https://jq.qq.com/?_wv=1027&k=5G2EwxR"));
 
         return;
     }
 
-    public View.OnClickListener stop(final TextView status, final EditText editText) {
+    public View.OnClickListener stop(final  Context ctx) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Proxysdk.stop((serviceID));
-                editText.setEnabled(true);
-                status.setText(R.string.stopped);
+                stopService(ctx,true);
             }
         };
     }
 
-    public View.OnClickListener start(final EditText log, final TextView status, final EditText editText, final Context ctx) {
+    private void stopService(Context ctx,boolean show) {
+        for (String serviceID : serviceIDs) {
+            Proxysdk.stop(serviceID);
+        }
+        serviceIDs.clear();
+        if (show){
+            Toast.makeText(ctx, R.string.stopdone, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public View.OnClickListener start(final EditText editText, final Context ctx) {
 
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String args = editText.getText().toString().trim();
-                if (args.indexOf("proxy") == 0 && args.length() >= 5) {
-                    args = args.substring(5);
+                stopService(ctx,false);
+                String[] lines = editText.getText().toString().trim().split("\n");
+                boolean isEmpty = true;
+                for (int i = 0; i < lines.length; i++) {
+                    String args = lines[i];
+                    args = args.trim();
+                    if (args.isEmpty()) {
+                        continue;
+                    }
+                    isEmpty = false;
+                    if (args.indexOf("proxy") == 0 && args.length() >= 5) {
+                        args = args.substring(5);
+                    }
+                    String serviceID = String.format("%f-%d", new Random().nextDouble(), new Random().nextInt());
+                    String err = Proxysdk.start(serviceID, args, "");
+                    if (!err.isEmpty()) {
+                        Toast.makeText(ctx, err, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    serviceIDs.add(serviceID);
                 }
-                if (args.replaceAll("\n","").length() == 0) {
+                if (isEmpty) {
                     Toast.makeText(ctx, R.string.argsisempty, Toast.LENGTH_LONG).show();
                     return;
                 }
-                String err = Proxysdk.startWithLog(serviceID, args, "", new LogCallback() {
-                    @Override
-                    public void write(String line) {
-                        Message msg=Message.obtain();
-                        msg.what=1;
-                        Bundle bundle=new Bundle();
-                        bundle.putString("line", line);
-                       msg.setData(bundle);
-                        handler.sendMessage(msg);
-                    }
-                });
-                if (!err.isEmpty()) {
-                    Toast.makeText(ctx, err, Toast.LENGTH_LONG).show();
-//                    Log.d(TAG, err);
-
-                } else {
-                    editText.setEnabled(false);
-                    status.setText("运行中");
-                }
+                Toast.makeText(ctx, R.string.startok, Toast.LENGTH_LONG).show();
             }
         };
     }
@@ -181,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Proxysdk.stop(serviceID);
+        stopService(this,false);
     }
 
     public TextWatcher watcher(final SharedPreferences.Editor editor, final EditText editText) {
@@ -232,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());
                 return ipAddress;
             } else if (info.getType() == ConnectivityManager.TYPE_ETHERNET) {
-                // 有限网络
+                // 本地网络
                 return getLocalIp();
             }
         }
@@ -247,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // 获取有限网IP
+    // 获取IP
     private static String getLocalIp() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface

@@ -69,10 +69,9 @@
     <EditText
         android:id="@+id/input"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="155dp"
         android:background="@drawable/log_shape"
         android:gravity="top"
-        android:inputType="textMultiLine"
         android:scrollbars="vertical"
         android:selectAllOnFocus="false"
         android:singleLine="false"
@@ -96,16 +95,13 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="91dp"
-        android:layout_height="37dp"
+        android:layout_width="301dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="108dp"
         android:padding="10dp"
         android:text="@string/args"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.006"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.182" />
+        tools:layout_editor_absoluteX="2dp" />
 
     <Button
         android:id="@+id/btn_start"
@@ -124,33 +120,6 @@
         app:layout_constraintVertical_bias="0.513" />
 
     <TextView
-        android:id="@+id/tv_status"
-        android:layout_width="72dp"
-        android:layout_height="25dp"
-        android:text="已停止"
-        android:textColor=" #ff1a1a"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.631" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="68dp"
-        android:layout_height="24dp"
-        android:paddingLeft="10dp"
-        android:text="状态："
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/view_manual"
-        app:layout_constraintVertical_bias="0.575" />
-
-    <TextView
         android:id="@+id/textView3"
         android:layout_width="69dp"
         android:layout_height="24dp"
@@ -162,18 +131,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.663" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingBottom="3dp"
-        android:text="日志："
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.695" />
 
     <Button
         android:id="@+id/btn_stop"
@@ -191,30 +148,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.512" />
 
-    <EditText
-        android:id="@+id/log_output"
-        android:layout_width="match_parent"
-        android:layout_height="137dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:background="@drawable/log_shape"
-        android:focusable="false"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        android:scrollbars="vertical"
-        android:singleLine="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.954" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.18" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
